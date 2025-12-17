@@ -15,9 +15,828 @@
   <meta name="twitter:site" content="@anbarth">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg-primary: #0a0a0b;
+      --bg-secondary: #111113;
+      --bg-card: #18181b;
+      --bg-card-hover: #1f1f23;
+      --text-primary: #fafafa;
+      --text-secondary: #a1a1aa;
+      --text-muted: #71717a;
+      --accent-primary: #3b82f6;
+      --accent-secondary: #8b5cf6;
+      --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #ec4899 100%);
+      --border-color: #27272a;
+      --border-subtle: rgba(255,255,255,0.06);
+      --header-bg: rgba(10, 10, 11, 0.8);
+      --icon-filter: brightness(0) invert(1);
+    }
+
+    [data-theme="light"] {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f4f4f5;
+      --bg-card: #fafafa;
+      --bg-card-hover: #f0f0f2;
+      --text-primary: #18181b;
+      --text-secondary: #52525b;
+      --text-muted: #71717a;
+      --accent-primary: #2563eb;
+      --accent-secondary: #7c3aed;
+      --border-color: #e4e4e7;
+      --border-subtle: rgba(0,0,0,0.06);
+      --header-bg: rgba(255, 255, 255, 0.8);
+      --icon-filter: brightness(0);
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    a {
+      color: var(--accent-primary);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    a:hover {
+      color: var(--accent-secondary);
+    }
+
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: var(--accent-primary);
+      color: white;
+      padding: 8px;
+      z-index: 100;
+    }
+
+    .skip-link:focus {
+      top: 0;
+    }
+
+    /* Navigation */
+    .site-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 1rem 2rem;
+      background: var(--header-bg);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-subtle);
+      transition: background-color 0.3s, border-color 0.3s;
+    }
+
+    .site-header .inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .logo {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--text-primary);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .social-icons {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .social-icons a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+
+    .social-icons a:hover {
+      background: var(--accent-primary);
+      border-color: var(--accent-primary);
+    }
+
+    .social-icons img,
+    .social-icons svg {
+      width: 18px;
+      height: 18px;
+      filter: var(--icon-filter);
+      opacity: 0.8;
+    }
+
+    .social-icons a:hover img,
+    .social-icons a:hover svg {
+      opacity: 1;
+    }
+
+    .theme-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .theme-toggle:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--text-muted);
+    }
+
+    .theme-toggle svg {
+      width: 18px;
+      height: 18px;
+      color: var(--text-primary);
+      transition: transform 0.3s;
+    }
+
+    .theme-toggle:hover svg {
+      transform: rotate(15deg);
+    }
+
+    .theme-toggle .sun-icon {
+      display: none;
+    }
+
+    .theme-toggle .moon-icon {
+      display: block;
+    }
+
+    [data-theme="light"] .theme-toggle .sun-icon {
+      display: block;
+    }
+
+    [data-theme="light"] .theme-toggle .moon-icon {
+      display: none;
+    }
+
+    /* Hamburger Menu */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      width: 36px;
+      height: 36px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      cursor: pointer;
+      padding: 8px;
+      transition: all 0.2s;
+    }
+
+    .hamburger:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--text-muted);
+    }
+
+    .hamburger span {
+      display: block;
+      width: 100%;
+      height: 2px;
+      background: var(--text-primary);
+      border-radius: 2px;
+      transition: all 0.3s;
+    }
+
+    .hamburger.active span:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+
+    .hamburger.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger.active span:nth-child(3) {
+      transform: rotate(-45deg) translate(5px, -5px);
+    }
+
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: 68px;
+      left: 0;
+      right: 0;
+      background: var(--bg-primary);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 1.5rem 2rem;
+      z-index: 99;
+      transform: translateY(-100%);
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+
+    .mobile-menu.active {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .mobile-menu ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .mobile-menu a {
+      display: block;
+      padding: 0.75rem 1rem;
+      color: var(--text-secondary);
+      font-size: 1rem;
+      font-weight: 500;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+
+    .mobile-menu a:hover {
+      background: var(--bg-card);
+      color: var(--text-primary);
+    }
+
+    /* Hero Section */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 8rem 2rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero .inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-copy {
+      max-width: 600px;
+    }
+
+    .eyebrow {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 1rem;
+    }
+
+    .hero h1 span {
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .tagline {
+      font-size: 1.25rem;
+      color: var(--text-primary);
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+      font-weight: 600;
+    }
+
+    .intro {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      line-height: 1.8;
+      margin-bottom: 2rem;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .primary-button, .ghost-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.875rem 1.75rem;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+    }
+
+    .primary-button {
+      background: var(--text-primary);
+      color: var(--bg-primary);
+    }
+
+    .primary-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 40px rgba(255,255,255,0.15);
+      color: var(--bg-primary);
+    }
+
+    .ghost-button {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+    }
+
+    .ghost-button:hover {
+      background: var(--bg-card);
+      border-color: var(--text-muted);
+      color: var(--text-primary);
+    }
+
+    .hero-portrait {
+      width: 380px;
+      height: 380px;
+      background-image: var(--hero-photo);
+      background-size: cover;
+      background-position: center top;
+      border-radius: 50%;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+
+    /* Sections */
+    .portfolio {
+      padding: 6rem 2rem;
+    }
+
+    .portfolio .inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-heading {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .section-heading h2 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+    }
+
+    .section-heading p {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Cards */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 1.5rem;
+      transition: all 0.3s, background-color 0.3s;
+    }
+
+    .card:hover {
+      background: var(--bg-card-hover);
+      transform: translateY(-4px);
+      border-color: var(--text-muted);
+    }
+
+    .video-thumb {
+      position: relative;
+      width: 100%;
+      padding-bottom: 56.25%;
+      margin-bottom: 1.25rem;
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--bg-secondary);
+    }
+
+    .video-thumb iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .card-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .card-meta.stacked {
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .course-card .card-meta.stacked {
+      align-items: center;
+    }
+
+    .meta-row {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .category {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      background: rgba(59, 130, 246, 0.15);
+      color: var(--accent-primary);
+      border-radius: 100px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .date {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
+
+    .event, .outlet {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .card h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      line-height: 1.4;
+      color: var(--text-primary);
+    }
+
+    .card h3 a {
+      color: var(--text-primary);
+    }
+
+    .card h3 a:hover {
+      color: var(--accent-primary);
+    }
+
+    .card p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      line-height: 1.7;
+      margin-bottom: 1rem;
+    }
+
+    .text-link {
+      display: inline-flex;
+      align-items: center;
+      color: var(--accent-primary);
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .text-link:hover {
+      color: var(--accent-secondary);
+    }
+
+    .card-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.5rem 1rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .card-link:hover {
+      background: var(--bg-card-hover);
+      color: var(--text-primary);
+      border-color: var(--text-muted);
+    }
+
+    .card-link svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .card-links {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    /* Books Grid */
+    .books-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .book-card {
+      display: block;
+      text-align: center;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .book-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--accent-gradient);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .book-card:hover::before {
+      opacity: 1;
+    }
+
+    .book-cover {
+      width: 100%;
+      max-width: 200px;
+      margin: 0 auto 1.5rem;
+      display: block;
+      border-radius: 8px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+      transition: transform 0.3s;
+    }
+
+    .book-card:hover .book-cover {
+      transform: scale(1.02);
+    }
+
+    .book-tag {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      background: rgba(59, 130, 246, 0.15);
+      color: var(--accent-primary);
+      border-radius: 100px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+
+    .book-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+
+    .book-description {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+      line-height: 1.7;
+    }
+
+    .book-links {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .book-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.5rem 1rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .book-link:hover {
+      background: var(--bg-card-hover);
+      color: var(--text-primary);
+      border-color: var(--text-muted);
+    }
+
+    .book-link svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    /* Course */
+    .courses-grid {
+      grid-template-columns: 1fr;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .course-card {
+      text-align: center;
+    }
+
+    .course-media {
+      margin-bottom: 1.25rem;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .course-media img {
+      width: 100%;
+      height: auto;
+    }
+
+    .course-links {
+      margin-top: 1rem;
+    }
+
+    /* Section CTA */
+    .section-cta {
+      text-align: center;
+      margin-top: 2rem;
+    }
+
+    /* Footer */
+    .site-footer {
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border-color);
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .footer-meta {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 968px) {
+      .hero .inner {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .hero-copy {
+        max-width: 100%;
+      }
+
+      .hero-cta {
+        justify-content: center;
+      }
+
+      .hero-portrait {
+        width: 300px;
+        height: 300px;
+        margin: 0 auto;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+
+      .mobile-menu {
+        display: block;
+      }
+
+      .books-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .site-header {
+        padding: 1rem;
+      }
+
+      .hero {
+        padding: 7rem 1.5rem 3rem;
+      }
+
+      .portfolio {
+        padding: 4rem 1.5rem;
+      }
+
+      .card-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-cta {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .primary-button, .ghost-button {
+        width: 100%;
+        max-width: 280px;
+        justify-content: center;
+      }
+    }
+  </style>
 </head>
 <body>
   <a href="#main-content" class="skip-link">Skip to main content</a>
@@ -30,8 +849,8 @@
           <li><a href="#keynotes">Keynotes</a></li>
           <li><a href="#books">Books</a></li>
           <li><a href="#course">Online Course</a></li>
-          <li><a href="#blog">Blog</a></li>
           <li><a href="#press">PR/Media</a></li>
+          <li><a href="#blog">Blog</a></li>
         </ul>
       </nav>
       <div class="nav-actions">
@@ -45,21 +864,45 @@
           <a href="https://github.com/antje" aria-label="GitHub" target="_blank" rel="noopener noreferrer">
             <img src="assets/github.png" alt="GitHub" width="32" height="32" />
           </a>
+          <a href="https://www.youtube.com/@AIPerformanceEngineering" aria-label="YouTube" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+          </a>
         </div>
-        <button class="theme-toggle" type="button" aria-label="Toggle theme">
-          <span class="theme-option theme-option-light">
-            <img src="assets/lightmode.png" alt="Light mode" width="14" height="14" />
-            Light
-          </span>
-          <span class="theme-option theme-option-dark">
-            <img src="assets/darkmode.png" alt="Dark mode" width="14" height="14" />
-            Dark
-          </span>
-          <span class="theme-thumb"></span>
+        <button class="theme-toggle" aria-label="Toggle light/dark mode">
+          <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+        <button class="hamburger" aria-label="Toggle menu" aria-expanded="false">
+          <span></span>
+          <span></span>
+          <span></span>
         </button>
       </div>
     </div>
   </header>
+
+  <nav class="mobile-menu" aria-label="Mobile navigation">
+    <ul>
+      <li><a href="#about">About</a></li>
+      <li><a href="#keynotes">Keynotes</a></li>
+      <li><a href="#books">Books</a></li>
+      <li><a href="#course">Online Course</a></li>
+      <li><a href="#press">PR/Media</a></li>
+      <li><a href="#blog">Blog</a></li>
+    </ul>
+  </nav>
 
   <main id="main-content">
     <section class="hero" id="about">
@@ -69,15 +912,25 @@
           <h1><span>Antje</span> Barth</h1>
           <p class="tagline">Member of Technical Staff · Keynote Speaker · Author</p>
           <p class="intro">
-            I'm a Member of Technical Staff and Developer Relations Lead at Amazon AGI Labs, based in San Francisco. I frequently speak at AI
-            engineering conferences, events, and meetups, and work closely with product teams to build the
-            future of agentic AI. I'm also co-author of the O'Reilly books Generative AI on AWS and Data
-            Science on AWS.
+            As a Member of Technical Staff at Amazon AGI Labs, I drive how developers discover, learn, and build with Amazon's next-generation AI. I work cross-functionally with Research, Product, and Engineering to translate emerging model capabilities into practical frameworks and guidance that help teams ship real applications. I'm also co-author of the O'Reilly books Generative AI on AWS and Data Science on AWS.
           </p>
           <div class="hero-cta">
-            <a class="primary-button" href="#keynotes">Watch a keynote</a>
-            <a class="ghost-button" href="#books">Check out my books</a>
-            <a class="ghost-button" href="#course">Learn GenAI fundamentals</a>
+            <a class="primary-button" href="#keynotes">
+              Watch a keynote
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+            <a class="ghost-button" href="#books">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+              Explore my books
+            </a>
+            <a class="ghost-button" href="#course">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none"/></svg>
+              Learn AI fundamentals
+            </a>
+            <a class="ghost-button" href="https://www.meetup.com/ai-performance-engineering/" target="_blank">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              Join online meetups
+            </a>
           </div>
         </div>
         <div
@@ -88,11 +941,11 @@
       </div>
     </section>
 
-    <section class="portfolio alt" id="keynotes">
+    <section class="portfolio" id="keynotes">
       <div class="inner">
         <div class="section-heading">
           <h2>Keynotes & Talks</h2>
-          <p>From mainstage keynotes to deep‑dives, these talks show how builders turn promising demos into reliable, shipped systems.</p>
+          <p>A few recent talks where I share what I've learned building and scaling AI systems.</p>
         </div>
         <div class="card-grid">
           <article class="card">
@@ -108,8 +961,13 @@
               <span class="event">AI Engineer World's Fair</span>
             </div>
             <h3>Building Agents at Cloud Scale</h3>
-            <p>A practical path for taking MCP‑style agents to AWS scale—what changes at each stage, the patterns that keep agents reliable, and demos along the way.</p>
-            <a class="text-link" href="https://www.youtube.com/watch?v=WJjInLeaJjo">Watch on YouTube →</a>
+            <p>A practical path for taking MCP-style agents to AWS scale—what changes at each stage, the patterns that keep agents reliable, and demos along the way.</p>
+            <div class="card-links">
+              <a class="card-link" href="https://www.youtube.com/watch?v=WJjInLeaJjo" target="_blank">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z"/><path fill="var(--bg-secondary)" d="M9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                Watch on YouTube
+              </a>
+            </div>
           </article>
           <article class="card">
             <div class="video-thumb">
@@ -124,8 +982,13 @@
               <span class="event">MCP Developer Summit</span>
             </div>
             <h3>Scaling MCP</h3>
-            <p>How to scale the Model Context Protocol in the cloud—serverless HTTP handlers on AWS Lambda, pragmatic context management, and where agentic services are heading next.</p>            
-            <a class="text-link" href="https://www.youtube.com/watch?v=9T_BBseYmY8">Watch on YouTube →</a>
+            <p>How to scale the Model Context Protocol in the cloud—serverless HTTP handlers on AWS Lambda, pragmatic context management, and where agentic services are heading next.</p>
+            <div class="card-links">
+              <a class="card-link" href="https://www.youtube.com/watch?v=9T_BBseYmY8" target="_blank">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z"/><path fill="var(--bg-secondary)" d="M9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                Watch on YouTube
+              </a>
+            </div>
           </article>
           <article class="card">
             <div class="video-thumb">
@@ -141,66 +1004,74 @@
             </div>
             <h3>From Software Developer to AI Engineer</h3>
             <p>How generative AI reshapes software development—new workflows, team habits, and AWS tools that help you move from idea to production faster.</p>
-            <a class="text-link" href="https://www.youtube.com/watch?v=90Ir4TMMbS0">Watch on YouTube →</a>
+            <div class="card-links">
+              <a class="card-link" href="https://www.youtube.com/watch?v=90Ir4TMMbS0" target="_blank">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z"/><path fill="var(--bg-secondary)" d="M9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                Watch on YouTube
+              </a>
+            </div>
           </article>
         </div>
       </div>
     </section>
 
-    <section class="portfolio alt" id="books">
+    <section class="portfolio" id="books">
       <div class="inner">
         <div class="section-heading">
           <h2>Books</h2>
-          <p>Practical guides that help teams deliver AI-driven products with clarity.</p>
+          <p>O'Reilly books I co-authored on generative AI and data science.</p>
         </div>
-        <div class="card-grid books-grid">
+        <div class="books-grid">
           <article class="card book-card">
-            <div class="book-cover">
-              <img src="assets/gaia-thumb.jpg" alt="Cover of Generative AI on AWS" loading="lazy" width="220" height="290" />
-            </div>
-            <div class="book-content">
-              <div class="card-meta book-meta">
-                <span class="category">Book</span>
-                <span class="date">December 2023</span>
-                <span class="event">O'Reilly Media, Inc.</span>
-              </div>
-              <h3>Generative AI on AWS</h3>
-              <p>A hands‑on guide to building context‑aware, multimodal applications on AWS—with patterns and end‑to‑end examples to get to production confidently.</p>
-              <div class="book-links">
-                <a class="text-link" href="https://learning.oreilly.com/library/view/generative-ai-on/9781098159214/">Read on oreilly.com →</a>
-                <a class="text-link" href="https://www.amazon.com/Generative-AWS-Context-Aware-Multimodal-Applications/dp/1098159225">Buy on amazon.com →</a>
-                <a class="text-link" href="https://github.com/generative-ai-on-aws/generative-ai-on-aws">GitHub repo →</a>
-              </div>
+            <img src="assets/gaia-thumb.jpg" alt="Generative AI on AWS Book Cover" class="book-cover">
+            <span class="book-tag">O'Reilly</span>
+            <h3 class="book-title">Generative AI on AWS</h3>
+            <p class="book-description">
+              Build multimodal applications with foundation models, LLMs, and diffusion models. Learn fine-tuning techniques including RLHF, PEFT, and prompt engineering on Amazon Bedrock and SageMaker.
+            </p>
+            <div class="book-links">
+              <a href="https://www.amazon.com/Generative-AI-AWS-Multimodal-Applications/dp/1098159225/" target="_blank" class="book-link">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                Amazon.com
+              </a>
+              <a href="https://github.com/generative-ai-on-aws/generative-ai-on-aws" target="_blank" class="book-link">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                Code
+              </a>
+              <a href="https://course.generativeaionaws.com" target="_blank" class="book-link">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+                Course
+              </a>
             </div>
           </article>
+
           <article class="card book-card">
-            <div class="book-cover">
-              <img src="assets/dsoaws-thumb.jpg" alt="Cover of Data Science on AWS" loading="lazy" width="220" height="290" />
-            </div>
-            <div class="book-content">
-              <div class="card-meta book-meta">
-                <span class="category">Book</span>
-                <span class="date">May 2021</span>
-                <span class="event">O'Reilly Media, Inc.</span>
-              </div>
-              <h3>Data Science on AWS</h3>
-              <p>A practical walkthrough for building and deploying end‑to‑end pipelines on AWS—bringing data, ML, and applications together so teams can ship faster.</p>
-              <div class="book-links">
-                <a class="text-link" href="https://learning.oreilly.com/library/view/data-science-on/9781492079385/">Read on oreilly.com →</a>
-                <a class="text-link" href="https://www.amazon.com/Data-Science-AWS-End-End/dp/1492079391">Buy on amazon.com →</a>
-                <a class="text-link" href="https://github.com/data-science-on-aws/data-science-on-aws">GitHub repo →</a>
-              </div>
+            <img src="assets/dsoaws-thumb.jpg" alt="Data Science on AWS Book Cover" class="book-cover">
+            <span class="book-tag">O'Reilly</span>
+            <h3 class="book-title">Data Science on AWS</h3>
+            <p class="book-description">
+              Build end-to-end ML pipelines with SageMaker, TensorFlow, and BERT. Master data engineering, model training, hyperparameter tuning, and production deployment at scale.
+            </p>
+            <div class="book-links">
+              <a href="https://www.amazon.com/dp/1492079391/" target="_blank" class="book-link">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                Amazon.com
+              </a>
+              <a href="https://github.com/data-science-on-aws/workshop" target="_blank" class="book-link">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                Code
+              </a>
             </div>
           </article>
         </div>
       </div>
     </section>
 
-<section class="portfolio alt" id="course">
+    <section class="portfolio" id="course">
       <div class="inner">
         <div class="section-heading">
           <h2>Online Course</h2>
-          <p>Self-paced learning experiences that make applied AI and data science accessible worldwide.</p>
+          <p>A course I built and co-instructed with Dr. Andrew Ng and DeepLearning.AI.</p>
         </div>
         <div class="card-grid courses-grid">
           <article class="card course-card">
@@ -212,71 +1083,23 @@
               <span class="outlet">DEEPLEARNING.AI</span>
             </div>
             <h3>Generative AI with Large Language Models</h3>
-            <p>On-demand DeepLearning.AI course and specialization that I co-instructed. We cover the full GenAI lifecycle (data and model selection through evaluation and deployment), explain transformers and fine‑tuning, use scaling laws to guide trade‑offs, and apply current best practices for training, tuning, inference, tooling, and deployment—grounded in stories from researchers and practitioners.</p>
-            <div class="course-links">
-              <a class="text-link" href="https://www.deeplearning.ai/short-courses/generative-ai-with-llms/">Explore the course →</a>
+            <p>On-demand DeepLearning.AI course that I managed development for and co-instructed in collaboration with Dr. Andrew Ng and the team at DeepLearning.AI. We cover the full GenAI lifecycle (data and model selection through evaluation and deployment), explain transformers and fine-tuning, use scaling laws to guide trade-offs, and apply current best practices for training, tuning, inference, tooling, and deployment.</p>
+            <div class="card-links" style="justify-content: center;">
+              <a class="card-link" href="https://www.deeplearning.ai/short-courses/generative-ai-with-llms/" target="_blank">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+                Explore the Course
+              </a>
             </div>
           </article>
         </div>
       </div>
     </section>
 
-
-
-    <section class="portfolio alt" id="blog">
-      <div class="inner">
-        <div class="section-heading">
-          <h2>Blog</h2>
-          <p>Launch posts I authored for the AWS News Blog.</p>
-        </div>
-        <div class="card-grid">
-          <article class="card">
-            <div class="card-meta blog-meta">
-              <span class="category">AWS News Blog</span>
-              <span class="date">2024</span>
-            </div>
-            <h3><a href="https://aws.amazon.com/blogs/aws/amazon-bedrock-guardrails-now-supports-multimodal-toxicity-detection-with-image-support/">
-              Amazon Bedrock Guardrails now supports multimodal toxicity detection with image support (preview)
-            </a></h3>
-            <p>Launch post for image‑aware content filtering in Guardrails—how to configure thresholds, and test the feature in the console and SDKs.</p>
-            <a class="text-link" href="https://aws.amazon.com/blogs/aws/amazon-bedrock-guardrails-now-supports-multimodal-toxicity-detection-with-image-support/">Read article →</a>
-          </article>
-          <article class="card">
-            <div class="card-meta blog-meta">
-              <span class="category">AWS News Blog</span>
-              <span class="date">2024</span>
-            </div>
-            <h3><a href="https://aws.amazon.com/blogs/aws/introducing-the-next-generation-of-amazon-sagemaker-the-center-for-all-your-data-analytics-and-ai/">
-              Introducing the next generation of Amazon SageMaker: The center for all your data, analytics, and AI
-            </a></h3>
-            <p>A tour of the new unified SageMaker—Unified Studio, Amazon Bedrock IDE integration, and Amazon Q woven into everyday workflows.</p>            
-            <a class="text-link" href="https://aws.amazon.com/blogs/aws/introducing-the-next-generation-of-amazon-sagemaker-the-center-for-all-your-data-analytics-and-ai/">Read article →</a>
-          </article>
-          <article class="card">
-            <div class="card-meta blog-meta">
-              <span class="category">AWS News Blog</span>
-              <span class="date">2024</span>
-            </div>
-            <h3><a href="https://aws.amazon.com/blogs/aws/introducing-multi-agent-collaboration-capability-for-amazon-bedrock/">
-              Introducing multi-agent collaboration capability for Amazon Bedrock (preview)
-            </a></h3>
-            <p>How Bedrock’s supervisor‑and‑subagents model helps specialized agents work together on complex tasks—plus a step‑by‑step demo to get started.</p>
-            <a class="text-link" href="https://aws.amazon.com/blogs/aws/introducing-multi-agent-collaboration-capability-for-amazon-bedrock/">Read article →</a>
-          </article>
-        </div>
-        <p class="section-cta">
-          <a class="text-link" href="https://aws.amazon.com/blogs/aws/author/antjebar/">Full list of my articles on the AWS News Blog →</a>
-        </p>
-      </div>
-    </section>
-
-    
-
-    <section class="portfolio alt" id="press">
+    <section class="portfolio" id="press">
       <div class="inner">
         <div class="section-heading">
           <h2>PR/Media</h2>
-          <p>Conversations where I unpack the builder's POV on agentic AI, safety, and the craft of developer advocacy.</p>
+          <p>Podcasts, interviews, and articles where I get to talk shop.</p>
         </div>
         <div class="card-grid">
           <article class="card">
@@ -285,9 +1108,14 @@
               <span class="date">July 2025</span>
               <span class="outlet">The New Stack</span>
             </div>
-            <h3><a href="https://thenewstack.io/antje-barth-podcast/">How AWS is Helping Developers with AI Reality</a></h3>
-            <p>What it takes to move agentic AI from hype to day‑to‑day developer reality—tools, safety, and a shipping mindset.</p>
-            <a class="text-link" href="https://thenewstack.io/antje-barth-podcast/">Listen to episode →</a>
+            <h3>How AWS is Helping Developers with AI Reality</h3>
+            <p>What it takes to move agentic AI from hype to day-to-day developer reality—tools, safety, and a shipping mindset.</p>
+            <div class="card-links">
+              <a class="card-link" href="https://thenewstack.io/antje-barth-podcast/" target="_blank">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+                Listen to Episode
+              </a>
+            </div>
           </article>
           <article class="card">
             <div class="card-meta press-meta">
@@ -295,9 +1123,14 @@
               <span class="date">June 2025</span>
               <span class="outlet">theCUBE</span>
             </div>
-            <h3><a href="https://www.youtube.com/watch?v=FGGU7pUJqSQ">How open source and agentic AI are converging</a></h3>
-            <p>Live at Open Source Summit Denver, a look at where open source meets agentic AI—and what that means for teams building on AWS.</p>            
-            <a class="text-link" href="https://www.youtube.com/watch?v=FGGU7pUJqSQ">Watch interview →</a>
+            <h3>How open source and agentic AI are converging</h3>
+            <p>Live at Open Source Summit Denver, a look at where open source meets agentic AI—and what that means for teams building on AWS.</p>
+            <div class="card-links">
+              <a class="card-link" href="https://www.youtube.com/watch?v=FGGU7pUJqSQ" target="_blank">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z"/><path fill="var(--bg-secondary)" d="M9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                Watch Interview
+              </a>
+            </div>
           </article>
           <article class="card">
             <div class="card-meta press-meta">
@@ -305,9 +1138,14 @@
               <span class="date">April 2025</span>
               <span class="outlet">The New Stack</span>
             </div>
-            <h3><a href="https://thenewstack.io/three-ai-assisted-development-skills-you-can-start-using-today/">Three AI-Assisted Development Skills You Can Use Today</a></h3>
-            <p>Three practical skills you can adopt now to level up AI‑assisted development without derailing your existing workflow.</p>            
-            <a class="text-link" href="https://thenewstack.io/three-ai-assisted-development-skills-you-can-start-using-today/">Read article →</a>
+            <h3>Three AI-Assisted Development Skills You Can Use Today</h3>
+            <p>Three practical skills you can adopt now to level up AI-assisted development without derailing your existing workflow.</p>
+            <div class="card-links">
+              <a class="card-link" href="https://thenewstack.io/three-ai-assisted-development-skills-you-can-start-using-today/" target="_blank">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                Read Article
+              </a>
+            </div>
           </article>
           <article class="card">
             <div class="card-meta press-meta">
@@ -315,9 +1153,14 @@
               <span class="date">April 2025</span>
               <span class="outlet">SD Times · What the Dev</span>
             </div>
-            <h3><a href="https://whatthedev.buzzsprout.com/673192/episodes/16984114-304-the-skills-developers-need-in-an-era-of-ai-development-with-aws-antje-barth">The skills developers need in an AI era</a></h3>
-            <p>A candid chat about the skills that matter as AI becomes table stakes—the rise of AI engineering and even a bit on “vibe coding.”</p>            
-            <a class="text-link" href="https://whatthedev.buzzsprout.com/673192/episodes/16984114-304-the-skills-developers-need-in-an-era-of-ai-development-with-aws-antje-barth">Listen to episode →</a>
+            <h3>The skills developers need in an AI era</h3>
+            <p>A candid chat about the skills that matter as AI becomes table stakes—the rise of AI engineering and even a bit on "vibe coding."</p>
+            <div class="card-links">
+              <a class="card-link" href="https://whatthedev.buzzsprout.com/673192/episodes/16984114-304-the-skills-developers-need-in-an-era-of-ai-development-with-aws-antje-barth" target="_blank">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+                Listen to Episode
+              </a>
+            </div>
           </article>
           <article class="card">
             <div class="card-meta press-meta">
@@ -325,11 +1168,75 @@
               <span class="date">October 2024</span>
               <span class="outlet">The Ravit Show</span>
             </div>
-            <h3><a href="https://www.youtube.com/watch?v=b1nwYVDROn0">Generative AI/ML for developers</a></h3>
-            <p>A conversation about how developer advocates help builders navigate new GenAI workflows and bring ideas to production.</p>            
-            <a class="text-link" href="https://www.youtube.com/watch?v=b1nwYVDROn0">Watch episode →</a>
+            <h3>Generative AI/ML for developers</h3>
+            <p>A conversation about how developer advocates help builders navigate new GenAI workflows and bring ideas to production.</p>
+            <div class="card-links">
+              <a class="card-link" href="https://www.youtube.com/watch?v=b1nwYVDROn0" target="_blank">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z"/><path fill="var(--bg-secondary)" d="M9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                Watch Episode
+              </a>
+            </div>
           </article>
         </div>
+      </div>
+    </section>
+
+    <section class="portfolio" id="blog">
+      <div class="inner">
+        <div class="section-heading">
+          <h2>Blog</h2>
+          <p>Some of my recent posts on the AWS News Blog.</p>
+        </div>
+        <div class="card-grid">
+          <article class="card">
+            <div class="card-meta blog-meta">
+              <span class="category">AWS News Blog</span>
+              <span class="date">2024</span>
+            </div>
+            <h3>Amazon Bedrock Guardrails now supports multimodal toxicity detection with image support (preview)</h3>
+            <p>Launch post for image-aware content filtering in Guardrails—how to configure thresholds, and test the feature in the console and SDKs.</p>
+            <div class="card-links">
+              <a class="card-link" href="https://aws.amazon.com/blogs/aws/amazon-bedrock-guardrails-now-supports-multimodal-toxicity-detection-with-image-support/" target="_blank">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                Read Article
+              </a>
+            </div>
+          </article>
+          <article class="card">
+            <div class="card-meta blog-meta">
+              <span class="category">AWS News Blog</span>
+              <span class="date">2024</span>
+            </div>
+            <h3>Introducing the next generation of Amazon SageMaker: The center for all your data, analytics, and AI</h3>
+            <p>A tour of the new unified SageMaker—Unified Studio, Amazon Bedrock IDE integration, and Amazon Q woven into everyday workflows.</p>
+            <div class="card-links">
+              <a class="card-link" href="https://aws.amazon.com/blogs/aws/introducing-the-next-generation-of-amazon-sagemaker-the-center-for-all-your-data-analytics-and-ai/" target="_blank">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                Read Article
+              </a>
+            </div>
+          </article>
+          <article class="card">
+            <div class="card-meta blog-meta">
+              <span class="category">AWS News Blog</span>
+              <span class="date">2024</span>
+            </div>
+            <h3>Introducing multi-agent collaboration capability for Amazon Bedrock (preview)</h3>
+            <p>How Bedrock's supervisor-and-subagents model helps specialized agents work together on complex tasks—plus a step-by-step demo to get started.</p>
+            <div class="card-links">
+              <a class="card-link" href="https://aws.amazon.com/blogs/aws/introducing-multi-agent-collaboration-capability-for-amazon-bedrock/" target="_blank">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                Read Article
+              </a>
+            </div>
+          </article>
+        </div>
+        <p class="section-cta">
+          <a class="card-link" href="https://aws.amazon.com/blogs/aws/author/antjebar/" target="_blank">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            All Articles on AWS News Blog
+          </a>
+        </p>
       </div>
     </section>
   </main>
@@ -367,17 +1274,47 @@
       yearEl.textContent = new Date().getFullYear();
     }
 
-    const toggle = document.querySelector('.theme-toggle');
-    const root = document.documentElement;
+    // Mobile menu toggle
+    const hamburger = document.querySelector('.hamburger');
+    const mobileMenu = document.querySelector('.mobile-menu');
+
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('active');
+      mobileMenu.classList.toggle('active');
+      hamburger.setAttribute('aria-expanded',
+        hamburger.classList.contains('active'));
+    });
+
+    // Close mobile menu when clicking a link
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        hamburger.classList.remove('active');
+        mobileMenu.classList.remove('active');
+        hamburger.setAttribute('aria-expanded', 'false');
+      });
+    });
+
+    // Theme toggle
+    const themeToggle = document.querySelector('.theme-toggle');
+    const html = document.documentElement;
+
+    // Check for saved preference or default to dark
     const savedTheme = localStorage.getItem('theme');
-    
-    if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      root.classList.add('theme-dark');
+    if (savedTheme) {
+      html.setAttribute('data-theme', savedTheme);
     }
-    
-    toggle?.addEventListener('click', () => {
-      root.classList.toggle('theme-dark');
-      localStorage.setItem('theme', root.classList.contains('theme-dark') ? 'dark' : 'light');
+
+    themeToggle.addEventListener('click', () => {
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+
+      if (newTheme === 'dark') {
+        html.removeAttribute('data-theme');
+      } else {
+        html.setAttribute('data-theme', newTheme);
+      }
+
+      localStorage.setItem('theme', newTheme);
     });
   </script>
 </body>
